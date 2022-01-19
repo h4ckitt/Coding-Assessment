@@ -1,13 +1,13 @@
 package router
 
 import (
-	"assessment/interfaces"
+	adapter "assessment/adapter/http"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-func InitRouter(controller *interfaces.Controller) *mux.Router {
+func InitRouter(controller *adapter.Controller) *mux.Router {
 	const APIVERSION = "/v1"
 	router := mux.NewRouter()
 	versionRouter := router.PathPrefix(APIVERSION).Subrouter()
