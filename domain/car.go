@@ -5,18 +5,34 @@ import (
 	"time"
 )
 
-type Schema struct {
-	ID          int       `json:"id,omitempty"`
-	LastUpdated time.Time `json:"last_updated,omitempty"`
-	CreatedTime time.Time `json:"created_time,omitempty"`
-	Type        string    `json:"type"`
-	Name        string    `json:"name"`
-	Color       string    `json:"color"`
-	SpeedRange  int       `json:"speed_range"`
-	Features    []string  `json:"features"`
+type Car struct {
+	ID          int
+	LastUpdated time.Time
+	CreatedTime time.Time
+	Type        string `json:"type"`
+	Name        string `json:"name"`
+	Color       string `json:"color"`
+	SpeedRange  int    `json:"speed_range"`
+	Features    []string
 }
 
-func (s *Schema) Check() error {
+type CarRepository interface {
+	Store(car Car) error
+	GetCarsByColor(color string) ([]Car, error)
+	GetCarByID(id string) (Car, error)
+}
+
+type CarUseCase interface {
+	Register(Car) error
+	ViewDetails(string) (Car, error)
+	GetCarsByColor(string) ([]Car, error)
+}
+
+func (s *Car) Check() error {
+	if s.Name == "" {
+		return errors.New("vehicle Name Cannot Be Empty")
+	}
+
 	if !contains(s.Type, []string{"sedan", "van", "suv", "motor-bike"}) {
 		return errors.New("vehicle type can only be one of sedan, van, suv, motor-bike")
 	}
