@@ -1,9 +1,10 @@
 package main
 
 import (
+	adapter "assessment/adapter/http"
+	"assessment/helpers"
 	"assessment/infrastructure"
-	"assessment/infrastructure/router"
-	"assessment/interfaces"
+	"assessment/infrastructure/http/router"
 	db "assessment/repository/postgres"
 	"assessment/usecases"
 	"fmt"
@@ -14,16 +15,14 @@ import (
 
 func main() {
 	logger := infrastructure.NewLogger()
-
+	helpers.InitializeLogger(logger)
 	repo, err := db.NewPostgresHandler()
-
 	if err != nil {
 		log.Panicln(err)
 	}
-
 	usecase := usecases.NewService(repo, logger)
 
-	controller := interfaces.NewController(usecase, logger)
+	controller := adapter.NewController(usecase, logger)
 
 	fmt.Println("Starting Server ....")
 
@@ -31,7 +30,3 @@ func main() {
 		log.Panicln(err)
 	}
 }
-
-/*func main() {
-	fmt.Println("vim-go")
-}*/
