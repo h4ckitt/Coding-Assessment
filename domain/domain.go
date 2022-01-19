@@ -1,13 +1,19 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Schema struct {
-	Type       string   `json:"type"`
-	Name       string   `json:"name"`
-	Color      string   `json:"color"`
-	SpeedRange int      `json:"speed_range"`
-	Features   []string `json:"features"`
+	ID          int       `json:"id,omitempty"`
+	LastUpdated time.Time `json:"last_updated,omitempty"`
+	CreatedTime time.Time `json:"created_time,omitempty"`
+	Type        string    `json:"type"`
+	Name        string    `json:"name"`
+	Color       string    `json:"color"`
+	SpeedRange  int       `json:"speed_range"`
+	Features    []string  `json:"features"`
 }
 
 func (s *Schema) Check() error {
@@ -28,6 +34,8 @@ func (s *Schema) Check() error {
 			return errors.New("vehicle does not offer option " + elem)
 		}
 	}
+
+	return nil
 }
 
 func contains(value string, slice []string) bool {
