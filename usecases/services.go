@@ -5,28 +5,32 @@ import (
 )
 
 type Service struct {
-	SchemaRepository domain.SchemaRepository
+	SchemaRepository SchemaRepository
 	Logger           Logger
 }
 
-func (s *Service) Register(schema domain.Schema) (int, error) {
+func NewService(repo SchemaRepository, logger Logger) *Service {
+	return &Service{repo, logger}
+}
+
+func (s *Service) Register(schema domain.Schema) error {
 	if err := schema.Check(); err != nil {
 		return err
 	}
 
-	id, err := s.SchemaRepository.Store(schema)
+	err := s.SchemaRepository.Store(schema)
 
-	return
+	return err
 }
 
-func (s *Service) ViewDetails(id int) (domain.Schema, error) {
-	car, err := s.SchemaRepository.GetById(id)
+func (s *Service) ViewDetails(id string) (domain.Schema, error) {
+	car, err := s.SchemaRepository.GetCarByID(id)
 
-	return
+	return car, err
 }
 
 func (s *Service) GetCarsByColor(color string) ([]domain.Schema, error) {
 	cars, err := s.SchemaRepository.GetCarsByColor(color)
 
-	return
+	return cars, err
 }
