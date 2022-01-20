@@ -47,7 +47,7 @@ func (controller *Controller) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helpers.ReturnSuccess(r, w, http.StatusCreated, "")
+	helpers.ReturnSuccess(r, w, http.StatusCreated, "Record Created Successfully")
 }
 
 func (controller *Controller) GetCarsByColor(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +75,7 @@ func (controller *Controller) GetCarsByColor(w http.ResponseWriter, r *http.Requ
 			Type:       car.Type,
 			Color:      car.Color,
 			SpeedRange: car.SpeedRange,
+			Features:   car.Features,
 		}
 
 		resultCars = append(resultCars, resultCar)
@@ -114,6 +115,7 @@ func (controller *Controller) ViewCarDetails(w http.ResponseWriter, r *http.Requ
 		Type:       car.Type,
 		Color:      car.Color,
 		SpeedRange: car.SpeedRange,
+		Features:   car.Features,
 	}
 
 	helpers.ReturnSuccess(r, w, http.StatusOK, result)
