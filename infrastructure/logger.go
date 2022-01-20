@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"assessment/usecases"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,7 +12,7 @@ type Logger struct {
 	AccessOutput *os.File
 }
 
-func NewLogger() usecases.Logger {
+func NewLogger() *Logger {
 	return &Logger{os.Stderr, os.Stdout}
 }
 
