@@ -15,11 +15,11 @@ import (
 )
 
 type Controller struct {
-	Service domain.CarUseCase
+	Service usecases.CarUseCase
 	Logger  usecases.Logger
 }
 
-func NewController(service domain.CarUseCase, logger usecases.Logger) *Controller {
+func NewController(service usecases.CarUseCase, logger usecases.Logger) *Controller {
 	return &Controller{
 		Service: service,
 		Logger:  logger,

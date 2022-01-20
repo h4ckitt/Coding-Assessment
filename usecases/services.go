@@ -2,14 +2,15 @@ package usecases
 
 import (
 	"assessment/domain"
+	"assessment/repository"
 )
 
 type Service struct {
-	CarRepository domain.CarRepository
+	CarRepository repository.CarRepository
 	Logger        Logger
 }
 
-func NewService(repo domain.CarRepository, logger Logger) *Service {
+func NewService(repo repository.CarRepository, logger Logger) *Service {
 	return &Service{repo, logger}
 }
 

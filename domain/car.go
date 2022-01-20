@@ -16,18 +16,6 @@ type Car struct {
 	Features    []string
 }
 
-type CarRepository interface {
-	Store(car Car) error
-	GetCarsByColor(color string) ([]Car, error)
-	GetCarByID(id string) (Car, error)
-}
-
-type CarUseCase interface {
-	Register(Car) error
-	ViewDetails(string) (Car, error)
-	GetCarsByColor(string) ([]Car, error)
-}
-
 func (s *Car) Check() error {
 	if s.Name == "" {
 		return errors.New("vehicle Name Cannot Be Empty")

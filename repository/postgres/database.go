@@ -14,7 +14,7 @@ type SchemaRepository struct {
 	conn *sql.DB
 }
 
-func NewPostgresHandler() (domain.CarRepository, error) {
+func NewPostgresHandler() (*SchemaRepository, error) {
 	fmt.Println("Here")
 	name := os.Getenv("DATABASE_NAME")
 	user := os.Getenv("DATABASE_USER")
@@ -81,7 +81,7 @@ func (handler *SchemaRepository) GetCarsByColor(color string) ([]domain.Car, err
 
 	for res.Next() {
 		var car domain.Car
-		var features []string
+		car.Features = make([]string, 0)
 		var id int
 
 		res.Scan(&id, &car.Name, &car.Type, &car.Color, &car.SpeedRange)
@@ -95,9 +95,9 @@ func (handler *SchemaRepository) GetCarsByColor(color string) ([]domain.Car, err
 		for featureRes.Next() {
 			var feature string
 			featureRes.Scan(&feature)
-			features = append(features, feature)
+			car.Features = append(car.Features, feature)
 		}
-		car.Features = append(car.Features, features...)
+
 		cars = append(cars, car)
 	}
 
@@ -109,6 +109,8 @@ func (handler *SchemaRepository) GetCarByID(id string) (domain.Car, error) {
 		car     domain.Car
 		feature string
 	)
+	car.Features = make([]string, 0)
+
 	carFetchStatement := `SELECT name, type, color, speed_range FROM cars WHERE id = ($1);`
 	featureFetchStatement := `SELECT feature FROM features WHERE car_id = $1`
 
