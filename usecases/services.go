@@ -9,7 +9,7 @@ type Service struct {
 	Logger        Logger
 }
 
-func NewService(repo domain.CarRepository, logger Logger) domain.CarUseCase {
+func NewService(repo domain.CarRepository, logger Logger) *Service {
 	return &Service{repo, logger}
 }
 
