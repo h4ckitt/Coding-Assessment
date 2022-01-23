@@ -1,14 +1,14 @@
 package adapter
 
 import (
-	"assessment/adapter/presenter"
-	"assessment/helpers"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"regexp"
 
+	"assessment/adapter/presenter"
 	"assessment/domain"
+	"assessment/helpers"
 	"assessment/usecases"
 
 	"github.com/gorilla/mux"
