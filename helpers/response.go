@@ -8,6 +8,18 @@ import (
 
 var logger usecases.Logger
 
+type success struct {
+	Status string      `json:"status"`
+	Code   int         `json:"code"`
+	Data   interface{} `json:"data"`
+}
+
+type failure struct {
+	Status string `json:"status"`
+	Code   int    `json:"code"`
+	Error  string `json:"error"`
+}
+
 func InitializeLogger(log usecases.Logger) {
 	logger = log
 }
@@ -30,7 +42,7 @@ func ReturnSuccess(r *http.Request, w http.ResponseWriter, code int, data interf
 		Code:   code,
 		Data:   data,
 	}
-	
+
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(&response)
 	logger.LogAccess(r, code)
