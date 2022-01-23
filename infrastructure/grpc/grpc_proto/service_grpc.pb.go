@@ -20,8 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CarServiceClient interface {
 	Register(ctx context.Context, in *Car, opts ...grpc.CallOption) (*Car, error)
-	GetCar(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*Car, error)
-	GetCars(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*Cars, error)
+	ViewCarDetails(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*Car, error)
+	GetCarsByColorOrType(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*Cars, error)
 }
 
 type carServiceClient struct {
@@ -41,18 +41,18 @@ func (c *carServiceClient) Register(ctx context.Context, in *Car, opts ...grpc.C
 	return out, nil
 }
 
-func (c *carServiceClient) GetCar(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*Car, error) {
+func (c *carServiceClient) ViewCarDetails(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*Car, error) {
 	out := new(Car)
-	err := c.cc.Invoke(ctx, "/assessment_grpc.CarService/GetCar", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/assessment_grpc.CarService/ViewCarDetails", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *carServiceClient) GetCars(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*Cars, error) {
+func (c *carServiceClient) GetCarsByColorOrType(ctx context.Context, in *Filter, opts ...grpc.CallOption) (*Cars, error) {
 	out := new(Cars)
-	err := c.cc.Invoke(ctx, "/assessment_grpc.CarService/GetCars", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/assessment_grpc.CarService/GetCarsByColorOrType", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (c *carServiceClient) GetCars(ctx context.Context, in *Filter, opts ...grpc
 // for forward compatibility
 type CarServiceServer interface {
 	Register(context.Context, *Car) (*Car, error)
-	GetCar(context.Context, *wrappers.Int32Value) (*Car, error)
-	GetCars(context.Context, *Filter) (*Cars, error)
+	ViewCarDetails(context.Context, *wrappers.Int32Value) (*Car, error)
+	GetCarsByColorOrType(context.Context, *Filter) (*Cars, error)
 	mustEmbedUnimplementedCarServiceServer()
 }
 
@@ -76,11 +76,11 @@ type UnimplementedCarServiceServer struct {
 func (UnimplementedCarServiceServer) Register(context.Context, *Car) (*Car, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedCarServiceServer) GetCar(context.Context, *wrappers.Int32Value) (*Car, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCar not implemented")
+func (UnimplementedCarServiceServer) ViewCarDetails(context.Context, *wrappers.Int32Value) (*Car, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewCarDetails not implemented")
 }
-func (UnimplementedCarServiceServer) GetCars(context.Context, *Filter) (*Cars, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCars not implemented")
+func (UnimplementedCarServiceServer) GetCarsByColorOrType(context.Context, *Filter) (*Cars, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCarsByColorOrType not implemented")
 }
 func (UnimplementedCarServiceServer) mustEmbedUnimplementedCarServiceServer() {}
 
@@ -113,38 +113,38 @@ func _CarService_Register_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CarService_GetCar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CarService_ViewCarDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(wrappers.Int32Value)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CarServiceServer).GetCar(ctx, in)
+		return srv.(CarServiceServer).ViewCarDetails(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/assessment_grpc.CarService/GetCar",
+		FullMethod: "/assessment_grpc.CarService/ViewCarDetails",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CarServiceServer).GetCar(ctx, req.(*wrappers.Int32Value))
+		return srv.(CarServiceServer).ViewCarDetails(ctx, req.(*wrappers.Int32Value))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CarService_GetCars_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CarService_GetCarsByColorOrType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Filter)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CarServiceServer).GetCars(ctx, in)
+		return srv.(CarServiceServer).GetCarsByColorOrType(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/assessment_grpc.CarService/GetCars",
+		FullMethod: "/assessment_grpc.CarService/GetCarsByColorOrType",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CarServiceServer).GetCars(ctx, req.(*Filter))
+		return srv.(CarServiceServer).GetCarsByColorOrType(ctx, req.(*Filter))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -161,12 +161,12 @@ var CarService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CarService_Register_Handler,
 		},
 		{
-			MethodName: "GetCar",
-			Handler:    _CarService_GetCar_Handler,
+			MethodName: "ViewCarDetails",
+			Handler:    _CarService_ViewCarDetails_Handler,
 		},
 		{
-			MethodName: "GetCars",
-			Handler:    _CarService_GetCars_Handler,
+			MethodName: "GetCarsByColorOrType",
+			Handler:    _CarService_GetCarsByColorOrType_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

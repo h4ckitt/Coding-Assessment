@@ -47,7 +47,7 @@ func (controller *CarServiceStruct) Register(ctx context.Context, car *pb.Car) (
 	return &pb.Car{}, nil
 }
 
-func (controller *CarServiceStruct) GetCar(ctx context.Context, id *wrappers.Int32Value) (*pb.Car, error) {
+func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrappers.Int32Value) (*pb.Car, error) {
 	carId := strconv.Itoa(int(id.Value))
 
 	car, err := controller.Service.ViewDetails(carId)
@@ -68,9 +68,33 @@ func (controller *CarServiceStruct) GetCar(ctx context.Context, id *wrappers.Int
 	return result, nil
 }
 
-func (controller *CarServiceStruct) GetCars(ctx context.Context, filter *pb.Filter) (*pb.Cars, error) {
+func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, filter *pb.Filter) (*pb.Cars, error) {
 	if color := filter.GetColor(); color != "" {
 		cars, err := controller.Service.GetCarsByColor(color)
+
+		if err != nil {
+			return &pb.Cars{}, status.Errorf(codes.Internal, "Your Request Could Not Be Completed At This Time, Please Try Again Later")
+		}
+
+		if len(cars) == 0 {
+			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+		}
+		var result []*pb.Car
+		for _, car := range cars {
+			resultCar := &pb.Car{
+				Name:       car.Name,
+				Color:      car.Color,
+				Type:       car.Type,
+				SpeedRange: int32(car.SpeedRange),
+				Features:   car.Features,
+			}
+
+			result = append(result, resultCar)
+		}
+
+		return &pb.Cars{Cars: result}, nil
+	} else if carType := filter.GetType(); carType != "" {
+		cars, err := controller.Service.GetCarsByType(carType)
 
 		if err != nil {
 			return &pb.Cars{}, status.Errorf(codes.Internal, "Your Request Could Not Be Completed At This Time, Please Try Again Later")

@@ -105,6 +105,51 @@ func (handler *SchemaRepository) GetCarsByColor(color string) ([]domain.Car, err
 	return cars, nil
 }
 
+func (handler *SchemaRepository) GetCarsByType(carType string) ([]domain.Car, error) {
+	var cars []domain.Car
+
+	carFetchStatement := `SELECT id, name, type, color, speed_range FROM cars WHERE type = ($1);`
+	featureFetchStatement := `SELECT feature FROM features WHERE car_id = $1;`
+
+	res, err := handler.conn.Query(carFetchStatement, carType)
+
+	if err != nil {
+		return []domain.Car{}, err
+	}
+
+	defer func(res *sql.Rows) {
+		err := res.Close()
+		if err != nil {
+
+		}
+	}(res)
+
+	for res.Next() {
+		var car domain.Car
+		car.Features = make([]string, 0)
+		var id int
+
+		res.Scan(&id, &car.Name, &car.Type, &car.Color, &car.SpeedRange)
+
+		featureRes, err := handler.conn.Query(featureFetchStatement, id)
+
+		if err != nil {
+			return []domain.Car{}, err
+		}
+
+		for featureRes.Next() {
+			var feature string
+			featureRes.Scan(&feature)
+			car.Features = append(car.Features, feature)
+		}
+
+		cars = append(cars, car)
+	}
+
+	return cars, nil
+
+}
+
 func (handler *SchemaRepository) GetCarByID(id string) (domain.Car, error) {
 	var (
 		car     domain.Car

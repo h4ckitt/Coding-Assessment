@@ -84,6 +84,40 @@ func (controller *Controller) GetCarsByColor(w http.ResponseWriter, r *http.Requ
 	helpers.ReturnSuccess(r, w, http.StatusOK, resultCars)
 }
 
+func (controller *Controller) GetCarsByType(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	var resultCars []presenter.Car
+
+	carType := r.URL.Query().Get("type")
+
+	cars, err := controller.Service.GetCarsByType(carType)
+
+	if err != nil {
+		helpers.ReturnFailure(r, w, http.StatusUnprocessableEntity, "The Request "+
+			"Could Not Be Processed At This Time, Please Try Again Later")
+		return
+	}
+
+	if len(cars) == 0 {
+		helpers.ReturnFailure(r, w, http.StatusNotFound, "The Requested Resource Was Not Found")
+		return
+	}
+
+	for _, car := range cars {
+		resultCar := presenter.Car{
+			Name:       car.Name,
+			Type:       car.Type,
+			Color:      car.Color,
+			SpeedRange: car.SpeedRange,
+			Features:   car.Features,
+		}
+
+		resultCars = append(resultCars, resultCar)
+	}
+
+	helpers.ReturnSuccess(r, w, http.StatusOK, resultCars)
+}
+
 func (controller *Controller) ViewCarDetails(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 

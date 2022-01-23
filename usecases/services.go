@@ -35,3 +35,9 @@ func (s *Service) GetCarsByColor(color string) ([]domain.Car, error) {
 
 	return cars, err
 }
+
+func (s *Service) GetCarsByType(carType string) ([]domain.Car, error) {
+	cars, err := s.CarRepository.GetCarsByType(carType)
+
+	return cars, err
+}
