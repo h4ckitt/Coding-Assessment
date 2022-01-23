@@ -20,10 +20,8 @@ message Cars {
 }
 
 message Filter {
-	oneof filter_type {
-		string color = 1;
-		string type = 2;
-	}
+		string Color = 1;
+		string Type = 2;
 }
 
 service CarService {
