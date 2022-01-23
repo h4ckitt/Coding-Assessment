@@ -56,7 +56,7 @@ func (s *Car) Check() error {
 
 	for _, elem := range s.Features {
 		if !contains(elem, []string{"sunroof", "panorama", "auto-parking", "surround-system"}) {
-			return errors.New("vehicle does not offer option " + elem)
+			return errors.New("unknown option " + elem)
 		}
 	}
 
