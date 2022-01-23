@@ -2,6 +2,9 @@ package domain
 
 import (
 	"errors"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,6 +23,24 @@ func (s *Car) Check() error {
 	if s.Name == "" {
 		return errors.New("vehicle Name Cannot Be Empty")
 	}
+
+	if s.Type == "" {
+		return errors.New("vehicle Type Cannot Be Empty")
+	}
+
+	if s.Color == "" {
+		return errors.New("vehicle Color Cannot Be Empty")
+	}
+
+	if match, _ := regexp.MatchString("^[0-9]+$", strconv.Itoa(s.SpeedRange)); !match {
+		return errors.New("invalid Vehicle SpeedRange Specified")
+	}
+
+	if len(s.Features) == 0 {
+		return errors.New("vehicle Features Cannot Be Empty")
+	}
+
+	s.convertToLower()
 
 	if !contains(s.Type, []string{"sedan", "van", "suv", "motor-bike"}) {
 		return errors.New("vehicle type can only be one of sedan, van, suv, motor-bike")
@@ -40,6 +61,15 @@ func (s *Car) Check() error {
 	}
 
 	return nil
+}
+
+func (s *Car) convertToLower() {
+	s.Type = strings.ToLower(s.Type)
+	s.Color = strings.ToLower(s.Color)
+
+	for index, elem := range s.Features {
+		s.Features[index] = strings.ToLower(elem)
+	}
 }
 
 func contains(value string, slice []string) bool {
