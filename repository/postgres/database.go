@@ -1,11 +1,12 @@
 package database
 
 import (
-	"assessment/domain"
 	"database/sql"
 	"fmt"
 	"os"
 	"time"
+
+	"assessment/domain"
 
 	_ "github.com/lib/pq"
 )
