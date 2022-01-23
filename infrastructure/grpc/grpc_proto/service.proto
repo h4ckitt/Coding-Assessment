@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package assessment_grpc;
+
+option go_package = "assessment/infrastructure/grpc_proto";
+
+import "google/protobuf/wrappers.proto";
+
+message Car {
+	string Name = 1;
+	string Type = 2;
+	string Color = 3;
+	int32 SpeedRange = 4;
+	repeated string features = 5;
+	
+}
+
+message Cars {
+	repeated Car cars = 1;
+}
+
+message Filter {
+	oneof filter_type {
+		string color = 1;
+		string type = 2;
+	}
+}
+
+service CarService {
+	rpc Register(Car) returns (Car);
+	rpc GetCar(google.protobuf.Int32Value) returns (Car);
+	rpc GetCars(Filter) returns (Cars);
+}
