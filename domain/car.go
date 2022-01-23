@@ -41,6 +41,7 @@ func (s *Car) Check() error {
 	}
 
 	s.convertToLower()
+	s.removeDuplicateFeatures()
 
 	if !contains(s.Type, []string{"sedan", "van", "suv", "motor-bike"}) {
 		return errors.New("vehicle type can only be one of sedan, van, suv, motor-bike")
@@ -79,4 +80,19 @@ func contains(value string, slice []string) bool {
 		}
 	}
 	return false
+}
+
+func (s *Car) removeDuplicateFeatures() {
+	strmap := make(map[string]bool)
+
+	var returnSlice []string
+
+	for _, elem := range s.Features {
+		if _, exists := strmap[elem]; !exists {
+			strmap[elem] = true
+			returnSlice = append(returnSlice, elem)
+		}
+	}
+
+	s.Features = returnSlice
 }
