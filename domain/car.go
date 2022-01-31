@@ -2,8 +2,6 @@ package domain
 
 import (
 	"errors"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -32,9 +30,9 @@ func (s *Car) Check() error {
 		return errors.New("vehicle Color Cannot Be Empty")
 	}
 
-	if match, _ := regexp.MatchString("^[0-9]+$", strconv.Itoa(s.SpeedRange)); !match {
-		return errors.New("invalid Vehicle SpeedRange Specified")
-	}
+	//	if match, _ := regexp.MatchString("^[0-9]+$", strconv.Itoa(s.SpeedRange)); !match {
+	//		return errors.New("invalid Vehicle SpeedRange Specified")
+	//	}
 
 	if len(s.Features) == 0 {
 		return errors.New("vehicle Features Cannot Be Empty")
