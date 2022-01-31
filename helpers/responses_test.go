@@ -1,14 +1,14 @@
 package helpers
 
 import (
-	"assessment/infrastructure"
+	"assessment/logger"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestSuccess(t *testing.T) {
-	InitializeLogger(infrastructure.NewLogger())
+	InitializeLogger(logger.NewTestLogger())
 	var codes = []int{200, 201, 202, 204}
 	handler := func(w http.ResponseWriter, r *http.Request, code int) {
 		ReturnSuccess(r, w, code, "Test Returned Success Successfully")
@@ -29,7 +29,7 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestFailure(t *testing.T) {
-	InitializeLogger(infrastructure.NewLogger())
+	InitializeLogger(logger.NewTestLogger())
 	var codes = []int{400, 401, 402, 403, 404, 405, 500, 503, 504}
 	handler := func(w http.ResponseWriter, r *http.Request, code int) {
 		ReturnFailure(r, w, code, "An Error Occurred")

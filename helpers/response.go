@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var logger usecases.Logger
+var logService usecases.Logger
 
 type success struct {
 	Status string      `json:"status"`
@@ -21,7 +21,7 @@ type failure struct {
 }
 
 func InitializeLogger(log usecases.Logger) {
-	logger = log
+	logService = log
 }
 
 func ReturnFailure(r *http.Request, w http.ResponseWriter, code int, err string) {
@@ -33,7 +33,8 @@ func ReturnFailure(r *http.Request, w http.ResponseWriter, code int, err string)
 
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(&response)
-	logger.LogAccess(r, code)
+
+	logService.LogAccess(r, code)
 }
 
 func ReturnSuccess(r *http.Request, w http.ResponseWriter, code int, data interface{}) {
@@ -45,5 +46,5 @@ func ReturnSuccess(r *http.Request, w http.ResponseWriter, code int, data interf
 
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(&response)
-	logger.LogAccess(r, code)
+	logService.LogAccess(r, code)
 }
