@@ -1,6 +1,8 @@
 package repository
 
-import "assessment/domain"
+import (
+	"assessment/domain"
+)
 
 type CarRepository interface {
 	Store(car domain.Car) error
