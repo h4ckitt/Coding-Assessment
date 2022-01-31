@@ -125,9 +125,13 @@ func (s *ServiceTestSuite) TestViewDetails() {
 }
 
 func (s *ServiceTestSuite) TestGetCarsByColor() {
-	_, err := s.service.GetCarsByColor("blue")
+	cars, err := s.service.GetCarsByColor("blue")
 
 	require.NoError(s.T(), err, "Expected: nil, Got: %v\n", err)
+
+	for _, car := range cars {
+		require.Equal(s.T(), "blue", car.Color)
+	}
 
 	_, err = s.service.GetCarsByColor("white")
 
@@ -135,9 +139,13 @@ func (s *ServiceTestSuite) TestGetCarsByColor() {
 }
 
 func (s *ServiceTestSuite) TestGetCarsByType() {
-	_, err := s.service.GetCarsByType("sedan")
+	cars, err := s.service.GetCarsByType("sedan")
 
 	require.NoError(s.T(), err, "Expected: nil, Got: %v\n", err)
+
+	for _, car := range cars {
+		require.Equal(s.T(), "sedan", car.Type)
+	}
 
 	_, err = s.service.GetCarsByType("white")
 
