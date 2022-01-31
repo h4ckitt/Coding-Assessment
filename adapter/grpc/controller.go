@@ -1,8 +1,8 @@
 package grpc
 
 import (
+	"assessment/adapter/grpc/grpc_proto"
 	"assessment/domain"
-	pb "assessment/infrastructure/grpc/grpc_proto"
 	"assessment/usecases"
 	"context"
 	"strconv"
@@ -14,7 +14,7 @@ import (
 
 type CarServiceStruct struct {
 	Service usecases.CarUseCase
-	pb.UnimplementedCarServiceServer
+	grpc_proto.UnimplementedCarServiceServer
 }
 
 func NewGRPCController(service usecases.CarUseCase) *CarServiceStruct {
@@ -23,7 +23,7 @@ func NewGRPCController(service usecases.CarUseCase) *CarServiceStruct {
 	}
 }
 
-func (controller *CarServiceStruct) Register(ctx context.Context, car *pb.Car) (*pb.Car, error) {
+func (controller *CarServiceStruct) Register(ctx context.Context, car *grpc_proto.Car) (*grpc_proto.Car, error) {
 	savedCar := domain.Car{
 		Name:       car.GetName(),
 		Color:      car.GetColor(),
@@ -36,23 +36,23 @@ func (controller *CarServiceStruct) Register(ctx context.Context, car *pb.Car) (
 
 	if err != nil {
 		//	controller.Logger.LogError("%s", err)
-		return &pb.Car{}, status.Errorf(codes.InvalidArgument, err.Error())
+		return &grpc_proto.Car{}, status.Errorf(codes.InvalidArgument, err.Error())
 	}
 
-	return &pb.Car{}, nil
+	return &grpc_proto.Car{}, nil
 }
 
-func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrappers.Int32Value) (*pb.Car, error) {
+func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrappers.Int32Value) (*grpc_proto.Car, error) {
 	carId := strconv.Itoa(int(id.Value))
 
 	car, err := controller.Service.ViewDetails(carId)
 
 	if err != nil {
 		//	controller.Logger.LogError("%s\n", err)
-		return &pb.Car{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+		return &grpc_proto.Car{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 	}
 
-	result := &pb.Car{
+	result := &grpc_proto.Car{
 		Name:       car.Name,
 		Color:      car.Color,
 		Type:       car.Type,
@@ -63,20 +63,20 @@ func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrap
 	return result, nil
 }
 
-func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, filter *pb.Filter) (*pb.Cars, error) {
+func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, filter *grpc_proto.Filter) (*grpc_proto.Cars, error) {
 	if color := filter.GetColor(); color != "" {
 		cars, err := controller.Service.GetCarsByColor(color)
 
 		if err != nil {
-			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}
 
 		/*if len(cars) == 0 {
 			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}*/
-		var result []*pb.Car
+		var result []*grpc_proto.Car
 		for _, car := range cars {
-			resultCar := &pb.Car{
+			resultCar := &grpc_proto.Car{
 				Name:       car.Name,
 				Color:      car.Color,
 				Type:       car.Type,
@@ -87,20 +87,20 @@ func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, fi
 			result = append(result, resultCar)
 		}
 
-		return &pb.Cars{Cars: result}, nil
+		return &grpc_proto.Cars{Cars: result}, nil
 	} else if carType := filter.GetType(); carType != "" {
 		cars, err := controller.Service.GetCarsByType(carType)
 
 		if err != nil {
-			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}
 
 		/*if len(cars) == 0 {
 			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}*/
-		var result []*pb.Car
+		var result []*grpc_proto.Car
 		for _, car := range cars {
-			resultCar := &pb.Car{
+			resultCar := &grpc_proto.Car{
 				Name:       car.Name,
 				Color:      car.Color,
 				Type:       car.Type,
@@ -111,8 +111,8 @@ func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, fi
 			result = append(result, resultCar)
 		}
 
-		return &pb.Cars{Cars: result}, nil
+		return &grpc_proto.Cars{Cars: result}, nil
 	}
 
-	return &pb.Cars{}, status.Errorf(codes.InvalidArgument, "")
+	return &grpc_proto.Cars{}, status.Errorf(codes.InvalidArgument, "")
 }

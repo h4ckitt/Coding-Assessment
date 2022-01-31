@@ -1,10 +1,10 @@
 package grpc_test
 
 import (
+	rpc "assessment/adapter/grpc"
+	"assessment/adapter/grpc/grpc_proto"
 	"assessment/domain"
 	"assessment/infrastructure/db/inmemoryteststore"
-	rpc "assessment/infrastructure/grpc"
-	pb "assessment/infrastructure/grpc/grpc_proto"
 	"assessment/usecases"
 	"context"
 	"github.com/stretchr/testify/require"
@@ -18,8 +18,8 @@ import (
 
 type GRPCTestSuite struct {
 	suite.Suite
-	pb.UnimplementedCarServiceServer
-	client pb.CarServiceClient
+	grpc_proto.UnimplementedCarServiceServer
+	client grpc_proto.CarServiceClient
 	closer func()
 }
 
@@ -69,7 +69,7 @@ func (g *GRPCTestSuite) SetupSuite() {
 
 	server := grpc.NewServer()
 
-	pb.RegisterCarServiceServer(server, rpc.NewGRPCController(service))
+	grpc_proto.RegisterCarServiceServer(server, rpc.NewGRPCController(service))
 
 	go func() {
 		if err := server.Serve(listener); err != nil {
@@ -87,7 +87,7 @@ func (g *GRPCTestSuite) SetupSuite() {
 		g.T().Fatalf("Error Creating A Connection: %v\n", err)
 	}
 
-	g.client = pb.NewCarServiceClient(conn)
+	g.client = grpc_proto.NewCarServiceClient(conn)
 
 	g.closer = func() {
 		err := listener.Close()
@@ -110,7 +110,7 @@ func TestGRPCSuite(t *testing.T) {
 func (g *GRPCTestSuite) TestRegister() {
 	ctx := context.TODO()
 
-	car := &pb.Car{
+	car := &grpc_proto.Car{
 		Name:       "Toyota Tundra",
 		Color:      "Blue",
 		Type:       "SUV",
@@ -178,8 +178,8 @@ func (g *GRPCTestSuite) TestViewCarDetails() {
 func (g *GRPCTestSuite) TestGetCarByColorOrType() {
 	ctx := context.TODO()
 
-	filter := &pb.Filter{
-		FilterType: &pb.Filter_Color{
+	filter := &grpc_proto.Filter{
+		FilterType: &grpc_proto.Filter_Color{
 			Color: "blue",
 		},
 	}
@@ -192,8 +192,8 @@ func (g *GRPCTestSuite) TestGetCarByColorOrType() {
 		require.Equal(g.T(), "blue", car.GetColor())
 	}
 
-	filter = &pb.Filter{
-		FilterType: &pb.Filter_Color{
+	filter = &grpc_proto.Filter{
+		FilterType: &grpc_proto.Filter_Color{
 			Color: "maroon",
 		},
 	}
@@ -202,8 +202,8 @@ func (g *GRPCTestSuite) TestGetCarByColorOrType() {
 
 	require.Errorf(g.T(), err, "Expected An Error, Got: %v\n", err)
 
-	filter = &pb.Filter{
-		FilterType: &pb.Filter_Type{
+	filter = &grpc_proto.Filter{
+		FilterType: &grpc_proto.Filter_Type{
 			Type: "sedan",
 		},
 	}
@@ -216,8 +216,8 @@ func (g *GRPCTestSuite) TestGetCarByColorOrType() {
 		require.Equal(g.T(), "sedan", car.GetType())
 	}
 
-	filter = &pb.Filter{
-		FilterType: &pb.Filter_Type{
+	filter = &grpc_proto.Filter{
+		FilterType: &grpc_proto.Filter_Type{
 			Type: "carriage",
 		},
 	}
@@ -226,8 +226,8 @@ func (g *GRPCTestSuite) TestGetCarByColorOrType() {
 
 	require.Errorf(g.T(), err, "Expected An Error, Got: %v\n", err)
 
-	filter = &pb.Filter{
-		FilterType: &pb.Filter_Type{},
+	filter = &grpc_proto.Filter{
+		FilterType: &grpc_proto.Filter_Type{},
 	}
 
 	_, err = g.client.GetCarsByColorOrType(ctx, filter)
