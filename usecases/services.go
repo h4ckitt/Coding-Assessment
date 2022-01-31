@@ -7,11 +7,10 @@ import (
 
 type Service struct {
 	CarRepository repository.CarRepository
-	Logger        Logger
 }
 
-func NewService(repo repository.CarRepository, logger Logger) *Service {
-	return &Service{repo, logger}
+func NewService(repo repository.CarRepository) *Service {
+	return &Service{repo}
 }
 
 func (s *Service) Register(car domain.Car) error {
