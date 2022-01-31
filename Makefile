@@ -8,3 +8,5 @@ test:
 	go test ./infrastructure/db/postgres
 	go test ./repository
 	go test -cover ./usecases
+	go test -cover ./adapter/grpc
+	go test -cover ./adapter/rest
