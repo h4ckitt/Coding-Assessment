@@ -1,13 +1,13 @@
 package main
 
 import (
-	adapter "assessment/adapter/http"
+	rpc "assessment/adapter/grpc"
+	pb "assessment/adapter/grpc/grpc_proto"
+	adapter "assessment/adapter/rest"
+	"assessment/adapter/rest/router"
 	"assessment/helpers"
-	"assessment/infrastructure"
 	db "assessment/infrastructure/db/postgres"
-	rpc "assessment/infrastructure/grpc"
-	pb "assessment/infrastructure/grpc/grpc_proto"
-	"assessment/infrastructure/rest/router"
+	"assessment/logger"
 	"assessment/usecases"
 	"flag"
 	"fmt"
@@ -19,13 +19,13 @@ import (
 )
 
 func main() {
-	logger := infrastructure.NewLogger()
+	logger := logger.NewLogger()
 	helpers.InitializeLogger(logger)
 	repo, err := db.NewPostgresHandler()
 	if err != nil {
 		log.Panicln(err)
 	}
-	usecase := usecases.NewService(repo, logger)
+	usecase := usecases.NewService(repo)
 
 	mode := flag.Bool("grpc", false, "grpc mode")
 	flag.Parse()
@@ -38,7 +38,7 @@ func main() {
 		}
 
 		server := grpc.NewServer()
-		pb.RegisterCarServiceServer(server, rpc.NewGRPCController(usecase, logger))
+		pb.RegisterCarServiceServer(server, rpc.NewGRPCController(usecase))
 
 		if err := server.Serve(lis); err != nil {
 			log.Fatal(err)
