@@ -21,7 +21,7 @@ import (
 
 var db *sql.DB
 
-const createString = `create table cars (
+const createString = `create table if not exists cars (
 id serial PRIMARY KEY,
 created_time TIMESTAMPTZ,
 last_updated TIMESTAMPTZ,
@@ -31,7 +31,7 @@ color VARCHAR NOT NULL,
 speed_range INTEGER NOT NULL
 )`
 
-const dropString = `DROP TABLE IF EXISTS cars`
+const checkString = `SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)`
 
 type DbTestSuite struct {
 	suite.Suite
@@ -59,13 +59,6 @@ func TestDbTestSuite(t *testing.T) {
 	suite.Run(t, new(DbTestSuite))
 }
 
-//Test Database Deletion
-func (s *DbTestSuite) TearDownSuite() {
-	_, err := db.Exec(dropString)
-
-	require.NoError(s.T(), err)
-}
-
 //Test DB Connection By Creating A New Table
 func (s *DbTestSuite) TestCreateTable() {
 
@@ -74,11 +67,19 @@ func (s *DbTestSuite) TestCreateTable() {
 	require.NoError(s.T(), err)
 }
 
-//Test That We're Talking To The Same DB
-// By Trying To Create The Same Table Twice
-// Doesn't Make Sense? (Probably)
-func (s *DbTestSuite) TestCreateTableError() {
-	_, err := db.Exec(createString)
+//Test Whether The cars Table Exists
+func (s *DbTestSuite) TestExists() {
+	for _, table := range []string{"cars", "features"} {
+		var exists bool
 
-	require.Error(s.T(), err)
+		rows := db.QueryRow(checkString, table)
+
+		err := rows.Scan(&exists)
+
+		require.NoError(s.T(), err)
+
+		if !exists {
+			s.T().Errorf("Database Cars Or Table Cars Should Exist")
+		}
+	}
 }

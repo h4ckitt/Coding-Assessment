@@ -23,7 +23,6 @@ Used To Communicate With The Database
 		- error
 */
 func NewPostgresHandler() (*SchemaRepository, error) {
-	fmt.Println("Here")
 	name := os.Getenv("DATABASE_NAME")
 	user := os.Getenv("DATABASE_USER")
 	password := os.Getenv("DATABASE_PASS")
