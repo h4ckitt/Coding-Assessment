@@ -16,20 +16,20 @@ Automotive Car Industry
 - The Application Can Work In Either Of Two Modes (GRPC/REST) Which Can Be Set In The .env File
 - Before Running In Docker, The `DATABASE_HOST` Entry in the .env Has To Be Changed To `db` And To `localhost` When Running Directly From Terminal. 
 
-## Run With Makefile:
-- Run The Project Without Building:
+## Run With Makefile
+- Run The Project Without Building
 ```sh
 $ make run
 ```
 This Is Also The Default Target Which Will If No Argument Is Provided To Make
 
-- Build The Project:
+- Build The Project
 ```sh
 $ make build
 ```
 This Would Create A Directory `bin` In The Project Root And Build The Resulting Executable There
 
-- Run The Project In A Docker Container:
+- Run The Project In A Docker Container
 ```sh
 $ make docker
 ```
@@ -47,29 +47,29 @@ This Runs All The Tests In All The Packages With Coverages Where Necessary
 $ make clean
 ```
 
-## Run With docker-compose :
-- Running The Project :
+## Run With docker-compose
+- Running The Project
 ```sh
 $ docker-compose up
 ```
 This Will Build The Necessary Image On The First Run
 
-- Bringing Down The Project :
+- Bringing Down The Project
 ```sh
 $ docker-compose down --volumes && docker image rm -f area99_web
 ```
 
 
-## Running Manually With Go:
-- Running The Project :
+## Running Manually With Go
+- Running The Project
 ```sh
 $ go build . && ./assessment
 ```
-# Making Requests :
+# Making Requests
 ## REST
 The REST API URL For Making Requests Is : `http://localhost:8080/v1/car`
 
-- To Register A Car :
+- To Register A Car
 ```sh
 $ curl -X POST http://localhost:8080/v1/cars -d \
 '{
@@ -81,18 +81,18 @@ $ curl -X POST http://localhost:8080/v1/cars -d \
 }'
 ```
 
-- To View A Car's Details:
+- To View A Car's Details
 The Car's ID Needs To Be Known
 ```sh
 $ curl http://localhost:8080/v1/cars/1
 ```
 
-- To Get A Car By Type:
+- To Get A Car By Type
 ```sh
 $ curl http://localhost:8080/v1/cars?type=sedan
 ```
 
-- To Get A Car By Color:
+- To Get A Car By Color
 ```sh
 $ curl http://localhost:8080/v1/cars?color=blue
 ```
