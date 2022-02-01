@@ -9,7 +9,6 @@ import (
 	db "assessment/infrastructure/db/postgres"
 	"assessment/logger"
 	"assessment/usecases"
-	"flag"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
@@ -19,18 +18,17 @@ import (
 )
 
 func main() {
-	logger := logger.NewLogger()
-	helpers.InitializeLogger(logger)
-	repo, err := db.NewPostgresHandler()
+	logService := logger.NewLogger()     //Initialize Logger
+	helpers.InitializeLogger(logService) //Use Initialized Logger To Initialize The Helper Package
+	repo, err := db.NewPostgresHandler() //Create A New (Postgres) Db Handler
 	if err != nil {
 		log.Panicln(err)
 	}
-	usecase := usecases.NewService(repo)
+	usecase := usecases.NewService(repo) //Create A New Service From The Previously Initialized Db Handler
 
-	mode := flag.Bool("grpc", false, "grpc mode")
-	flag.Parse()
+	mode := os.Getenv("OP_MODE")
 
-	if *mode {
+	if mode == "GRPC" {
 		lis, err := net.Listen("tcp", ":50051")
 
 		if err != nil {
@@ -43,14 +41,16 @@ func main() {
 		if err := server.Serve(lis); err != nil {
 			log.Fatal(err)
 		}
-	} else {
+	} else if mode == "REST" {
 
-		controller := adapter.NewController(usecase, logger)
+		controller := adapter.NewController(usecase, logService)
 
 		fmt.Println("Starting Server ....")
 
 		if err := http.ListenAndServe(":"+os.Getenv("PORT"), router.InitRouter(controller)); err != nil {
 			log.Panicln(err)
 		}
+	} else {
+		log.Fatalf("Unknown Mode : %s\n", mode)
 	}
 }
