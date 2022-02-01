@@ -18,5 +18,6 @@ services:
                         - '50051:50051'
                 env_file:
                         - .env
+                command: ["sh", "wait-for-db", "db", "./assessment"]
 volumes:
         db:
