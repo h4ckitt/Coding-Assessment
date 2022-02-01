@@ -7,7 +7,7 @@ services:
                         - db:/var/lib/postgresql/data
                         - ./infrastructure/db/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
                 env_file:
-                        - db.env
+                        - .env
 
         web:
                 build: .
@@ -16,6 +16,6 @@ services:
                 ports:
                         - '8080:8080'
                 env_file:
-                        - db.env
+                        - .env
 volumes:
         db:
