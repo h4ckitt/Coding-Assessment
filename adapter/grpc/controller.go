@@ -26,7 +26,7 @@ func NewGRPCController(service usecases.CarUseCase) *CarServiceStruct {
 	}
 }
 
-/*Register: Deserializes And Saves The Car Type Into The Database
+/*Register : Deserializes And Saves The Car Type Into The Database
 
  */
 func (controller *CarServiceStruct) Register(ctx context.Context, car *grpc_proto.Car) (*grpc_proto.Car, error) {
@@ -83,9 +83,9 @@ func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, fi
 			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}
 
-		/*if len(cars) == 0 {
-			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
-		}*/
+		if len(cars) == 0 {
+			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+		}
 		var result []*grpc_proto.Car
 		for _, car := range cars {
 			resultCar := &grpc_proto.Car{
@@ -107,9 +107,9 @@ func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, fi
 			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
 		}
 
-		/*if len(cars) == 0 {
-			return &pb.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
-		}*/
+		if len(cars) == 0 {
+			return &grpc_proto.Cars{}, status.Errorf(codes.NotFound, "The Requested Resource Was Not Found")
+		}
 		var result []*grpc_proto.Car
 		for _, car := range cars {
 			resultCar := &grpc_proto.Car{
