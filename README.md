@@ -3,6 +3,7 @@ This Is My Submission For The Area99 Golang Backend Developer Role Assessment To
 Automotive Car Industry
 
 # Decisions Made Outside The Instruction Scope
+* Developed The Project Using The CLEAN Architecture
 * Added Docker Support And A Makefile To Immensely Ease Getting The Project Up And Running.
 
 # Let's Run It
