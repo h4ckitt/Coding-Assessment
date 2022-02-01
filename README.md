@@ -12,6 +12,10 @@ Automotive Car Industry
 - docker
 - docker-compose
 
+## Things To Note
+- The Application Can Work In Either Of Two Modes (GRPC/REST) Which Can Be Set In The .env File
+- Before Running In Docker, The `DATABASE_HOST` Entry in the .env Has To Be Changed To `db` And To `localhost` When Running Directly From Terminal. 
+
 ## Run With Makefile:
 - Run The Project Without Building:
 ```sh
@@ -61,3 +65,63 @@ $ docker-compose down --volumes && docker image rm -f area99_web
 ```sh
 $ go build . && ./assessment
 ```
+# Making Requests :
+## REST
+The REST API URL For Making Requests Is : `http://localhost:8080/v1/car`
+
+- To Register A Car :
+```sh
+$ curl -X POST http://localhost:8080/v1/cars -d \
+'{
+"name": "Nissan Leaf",
+"type": "sedan",
+"color": "green",
+"speed_range": 160,
+"features": ["sunroof", "surround-system"]
+}'
+```
+
+- To View A Car's Details:
+The Car's ID Needs To Be Known
+```sh
+$ curl http://localhost:8080/v1/cars/1
+```
+
+- To Get A Car By Type:
+```sh
+$ curl http://localhost:8080/v1/cars?type=sedan
+```
+
+- To Get A Car By Color:
+```sh
+$ curl http://localhost:8080/v1/cars?color=blue
+```
+
+## GRPC
+Although I Couldn't Find A Way To Test My Server With Insomnia Nor Postman, I Found [grpcox](https://github.com/gusaul/grpcox) Helpful.
+
+The .proto File Is Located In `adapter/grpc/grpc_proto`
+
+The Methods On The GRPC Server Are:
+- ViewCarDetails: This Takes An int32 Integer
+- Register: 
+```
+{
+  "Name": "",
+  "Type": "",
+  "Color": "",
+  "SpeedRange": 0,
+  "features": [
+    ""
+  ]
+}
+```
+- GetCarsByColorOrType:
+```
+{
+ "Color": "",
+ "Type": "" 
+}
+```
+This Is A OneOf Struct And Only One Of Color And Type Can Be Set At The Same Time.
+Setting Both Sends Only The Type Variable
