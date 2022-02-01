@@ -20,3 +20,7 @@ test:
 
 docker: Dockerfile docker-compose.yml
 	docker-compose up
+
+clean:
+	docker-compose down --volumes
+	docker image rm -f area99_web
