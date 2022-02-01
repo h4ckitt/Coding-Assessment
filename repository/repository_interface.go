@@ -4,6 +4,7 @@ import (
 	"assessment/domain"
 )
 
+//CarRepository : Interfaces Which Must Be Implemented By Any Data Repository
 type CarRepository interface {
 	Store(car domain.Car) error
 	GetCarsByColor(color string) ([]domain.Car, error)

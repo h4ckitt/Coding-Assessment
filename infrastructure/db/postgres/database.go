@@ -15,6 +15,13 @@ type SchemaRepository struct {
 	conn *sql.DB
 }
 
+/*NewPostgresHandler : Returns A New Database Handler Which Would Be
+Used To Communicate With The Database
+
+	returns:
+		- *schemaRepository
+		- error
+*/
 func NewPostgresHandler() (*SchemaRepository, error) {
 	fmt.Println("Here")
 	name := os.Getenv("DATABASE_NAME")
@@ -40,6 +47,13 @@ func NewPostgresHandler() (*SchemaRepository, error) {
 	return &SchemaRepository{db}, nil
 }
 
+/*Store : Ensures That The Provided Object Is Stored Into The Database
+params:
+	- domain.Car
+
+returns:
+	- error
+*/
 func (handler *SchemaRepository) Store(car domain.Car) error {
 	var id int
 	carInsertStatement := `INSERT INTO cars (type, name, color, speed_range, created_time, last_updated) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`
@@ -62,6 +76,16 @@ func (handler *SchemaRepository) Store(car domain.Car) error {
 	return nil
 }
 
+/*GetCarsByColor : Retrieves The Entity Whose Color Matches The One
+Provided By The Caller
+
+	params:
+		- color <string>
+
+	returns:
+		- []domain.Car
+		- error
+*/
 func (handler *SchemaRepository) GetCarsByColor(color string) ([]domain.Car, error) {
 	var cars []domain.Car
 	carFetchStatement := `SELECT id, name, type, color, speed_range FROM cars WHERE color = ($1);`
@@ -105,6 +129,16 @@ func (handler *SchemaRepository) GetCarsByColor(color string) ([]domain.Car, err
 	return cars, nil
 }
 
+/*GetCarsByType : Retrieves The Entity Whose type Matches The One
+Provided By The Caller
+
+	params:
+		- type <string>
+
+	returns:
+		- []domain.Car
+		- error
+*/
 func (handler *SchemaRepository) GetCarsByType(carType string) ([]domain.Car, error) {
 	var cars []domain.Car
 
@@ -150,6 +184,16 @@ func (handler *SchemaRepository) GetCarsByType(carType string) ([]domain.Car, er
 
 }
 
+/*GetCarsByID : Retrieves The Entity Whose id Matches The One
+Provided By The Caller
+
+	params:
+		- id <string>
+
+	returns:
+		- domain.Car
+		- error
+*/
 func (handler *SchemaRepository) GetCarByID(id string) (domain.Car, error) {
 	var (
 		car     domain.Car

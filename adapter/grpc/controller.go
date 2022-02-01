@@ -17,12 +17,18 @@ type CarServiceStruct struct {
 	grpc_proto.UnimplementedCarServiceServer
 }
 
+/*NewGRPCController : Returns A New Controller That Can Be Used To Execute
+Registered Methods
+*/
 func NewGRPCController(service usecases.CarUseCase) *CarServiceStruct {
 	return &CarServiceStruct{
 		Service: service,
 	}
 }
 
+/*Register: Deserializes And Saves The Car Type Into The Database
+
+ */
 func (controller *CarServiceStruct) Register(ctx context.Context, car *grpc_proto.Car) (*grpc_proto.Car, error) {
 	savedCar := domain.Car{
 		Name:       car.GetName(),
@@ -42,6 +48,9 @@ func (controller *CarServiceStruct) Register(ctx context.Context, car *grpc_prot
 	return &grpc_proto.Car{}, nil
 }
 
+/*ViewCarDetails : Fetches The Entity Whose ID Matches The Provided ID
+
+ */
 func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrappers.Int32Value) (*grpc_proto.Car, error) {
 	carId := strconv.Itoa(int(id.Value))
 
@@ -63,6 +72,9 @@ func (controller *CarServiceStruct) ViewCarDetails(ctx context.Context, id *wrap
 	return result, nil
 }
 
+/*GetCarsByColorOrType : Fetches The Cars Whose Attributes Match The Ones Provided In
+The Filter Object
+*/
 func (controller *CarServiceStruct) GetCarsByColorOrType(ctx context.Context, filter *grpc_proto.Filter) (*grpc_proto.Cars, error) {
 	if color := filter.GetColor(); color != "" {
 		cars, err := controller.Service.GetCarsByColor(color)

@@ -17,6 +17,12 @@ type Car struct {
 	Features    []string
 }
 
+/*Check : Ensures That All Attributes Of A Provided Car Entity Are Properly Filled
+Before Further Operatiions Should Be Performed On It
+
+	Returns:
+		- error
+*/
 func (s *Car) Check() error {
 	if s.Name == "" {
 		return errors.New("vehicle Name Cannot Be Empty")
@@ -62,6 +68,9 @@ func (s *Car) Check() error {
 	return nil
 }
 
+//converts the necessary attributes
+//to lower case before storing to
+//the database
 func (s *Car) convertToLower() {
 	s.Type = strings.ToLower(s.Type)
 	s.Color = strings.ToLower(s.Color)
@@ -71,6 +80,8 @@ func (s *Car) convertToLower() {
 	}
 }
 
+//checks if a value is present in the provided
+//slice
 func contains(value string, slice []string) bool {
 	for _, elem := range slice {
 		if elem == value {
@@ -80,6 +91,10 @@ func contains(value string, slice []string) bool {
 	return false
 }
 
+//removes duplicates from the provided car's
+//features.
+//This step prevents redundant data from being
+//stored in the database
 func (s *Car) removeDuplicateFeatures() {
 	strmap := make(map[string]bool)
 

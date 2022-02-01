@@ -19,6 +19,14 @@ type Controller struct {
 	Logger  usecases.Logger
 }
 
+/*NewController : Creates A New REST Controller
+Params:
+	- usecases.CarUseCase
+	- logger.Logger
+
+Returns:
+	- *Controller
+*/
 func NewController(service usecases.CarUseCase, logger usecases.Logger) *Controller {
 	return &Controller{
 		Service: service,
@@ -26,6 +34,9 @@ func NewController(service usecases.CarUseCase, logger usecases.Logger) *Control
 	}
 }
 
+/*Register : This Function Is Responsible For The Deserialization Of The JSON Input
+And Successful Registration Of The Resulting Car Object
+*/
 func (controller *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	var car domain.Car
@@ -50,6 +61,9 @@ func (controller *Controller) Register(w http.ResponseWriter, r *http.Request) {
 	helpers.ReturnSuccess(r, w, http.StatusCreated, "Record Created Successfully")
 }
 
+/*GetCarsByColor : Gets Color Variable From The URI And Returns The Cars Whose Colors Match
+The Query
+*/
 func (controller *Controller) GetCarsByColor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	var resultCars []presenter.Car
@@ -83,6 +97,9 @@ func (controller *Controller) GetCarsByColor(w http.ResponseWriter, r *http.Requ
 	helpers.ReturnSuccess(r, w, http.StatusOK, resultCars)
 }
 
+/*GetCarsByType : Extracts The Type Query And Returns All Cars Whose Type Matches The
+Extracted Query
+*/
 func (controller *Controller) GetCarsByType(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	var resultCars []presenter.Car
@@ -116,6 +133,9 @@ func (controller *Controller) GetCarsByType(w http.ResponseWriter, r *http.Reque
 	helpers.ReturnSuccess(r, w, http.StatusOK, resultCars)
 }
 
+/*ViewCarDetails : Fetches The Car Whose ID Matches The Specified Query
+
+ */
 func (controller *Controller) ViewCarDetails(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
