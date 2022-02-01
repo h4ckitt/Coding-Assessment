@@ -11,7 +11,7 @@ message Car {
 	string Type = 2;
 	string Color = 3;
 	int32 SpeedRange = 4;
-	repeated string features = 5;
+	repeated string Features = 5;
 	
 }
 
