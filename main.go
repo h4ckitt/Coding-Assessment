@@ -28,8 +28,15 @@ func main() {
 
 	mode := os.Getenv("OP_MODE")
 
-	if mode == "GRPC" {
-		lis, err := net.Listen("tcp", ":50051")
+	switch mode {
+	case "GRPC":
+		port := os.Getenv("GRPC_PORT")
+
+		if port == "" {
+			log.Fatal(err)
+		}
+
+		lis, err := net.Listen("tcp", ":"+port)
 
 		if err != nil {
 			log.Fatal(err)
@@ -38,10 +45,17 @@ func main() {
 		server := grpc.NewServer()
 		pb.RegisterCarServiceServer(server, rpc.NewGRPCController(usecase))
 
+		log.Println("Starting GRPC Server")
 		if err := server.Serve(lis); err != nil {
 			log.Fatal(err)
 		}
-	} else if mode == "REST" {
+
+	case "REST":
+		port := os.Getenv("HTTP_PORT")
+
+		if port == "" {
+			log.Fatalln("Http Port Not Set")
+		}
 
 		controller := adapter.NewController(usecase, logService)
 
@@ -50,7 +64,8 @@ func main() {
 		if err := http.ListenAndServe(":"+os.Getenv("PORT"), router.InitRouter(controller)); err != nil {
 			log.Panicln(err)
 		}
-	} else {
+
+	default:
 		log.Fatalf("Unknown Mode : %s\n", mode)
 	}
 }
