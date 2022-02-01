@@ -9,7 +9,6 @@ import (
 	db "assessment/infrastructure/db/postgres"
 	"assessment/logger"
 	"assessment/usecases"
-	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -59,7 +58,7 @@ func main() {
 
 		controller := adapter.NewController(usecase, logService)
 
-		fmt.Println("Starting Server ....")
+		log.Println("Starting HTTP Server ....")
 
 		if err := http.ListenAndServe(":"+os.Getenv("PORT"), router.InitRouter(controller)); err != nil {
 			log.Panicln(err)
