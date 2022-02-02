@@ -29,4 +29,4 @@ docker: Dockerfile docker-compose.yml
 .PHONY: clean
 clean:
 	@docker-compose down --volumes
-	@docker image rm -f area99_web
+	@docker image rm -f area99_assessment:dharmy

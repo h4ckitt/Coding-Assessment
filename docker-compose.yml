@@ -11,6 +11,7 @@ services:
 
         web:
                 build: .
+                image: area99_assessment:dharmy
                 depends_on:
                         - db
                 ports:
